@@ -45,8 +45,8 @@ jobs:
         
     - name: Release
       uses: softprops/action-gh-release@v2
-      tag_name: ${{ steps.tag_version.outputs.new_tag }}
-      body: ${{ steps.tag_version.outputs.changelog }}
-      make_latest: true
       with:
+        tag_name: ${{ steps.tag_version.outputs.new_tag }}
+        body: ${{ steps.tag_version.outputs.changelog }}
+        make_latest: true
         files: ${{ github.workspace }}/dist/main
