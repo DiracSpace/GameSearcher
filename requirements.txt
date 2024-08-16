@@ -3,3 +3,4 @@ requests-cache
 beautifulsoup4
 tenacity
 python-dotenv
+pyinstaller
