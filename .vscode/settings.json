@@ -1,0 +1,18 @@
+{
+  "eslint.enable": false,
+  "python.languageServer": "Pylance",
+  "python.analysis.typeCheckingMode": "standard",
+  "python.analysis.autoImportCompletions": true,
+  "python.analysis.autoIndent": true,
+  "python.analysis.inlayHints.variableTypes": true,
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.formatOnType": true,
+    "editor.formatOnSave": true
+  },
+  "workbench.colorCustomizations": {
+    "activityBar.background": "#302F00",
+    "titleBar.activeBackground": "#434201",
+    "titleBar.activeForeground": "#FFFDB6"
+  }
+}
