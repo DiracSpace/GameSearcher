@@ -35,8 +35,8 @@ jobs:
       run: |
         pytest
 
-    - name: Package Application
-      uses: vednig/pyinstaller-action-windows@main
+    - name: PyInstaller Windows
+      uses: JackMcKew/pyinstaller-action-windows@main
       with:
         path: src
 
