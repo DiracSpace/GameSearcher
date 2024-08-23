@@ -2,7 +2,6 @@
 
 
 from modules.core import ContentResponse, HttpContent
-from modules.myrient import MyrientConsole
 from bs4 import BeautifulSoup, NavigableString, Tag
 from typing import List
 from dataclasses import dataclass
@@ -111,18 +110,6 @@ class MyrientPlaystation3Parser:
                 continue
             parsed_table_rows.append(MyrientTableRow(table_row))
         return parsed_table_rows
-
-
-class MyrientGamecubeParser:
-    content: str
-    query: str
-
-    def __init__(self, content: str, query: str):
-        self.content = content
-        self.query = query
-
-    def parse_content(self) -> List[MyrientTableRow]:
-        return []
 
 
 @dataclass

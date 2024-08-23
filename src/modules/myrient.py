@@ -1,53 +1,55 @@
 #!/usr/bin/python3
 
-from enum import Enum
-from dataclasses import dataclass
 from typing import List
+from bs4 import BeautifulSoup, NavigableString
+from modules.core import ConsoleType, ContentResponse, Game, HttpContent, Source
 
 
-class MyrientConsole(Enum):
-    unknown = "unknown"
-    playstation_3 = "playstation_3"
-    gamecube = "gamecube"
-
-    @staticmethod
-    def from_string(console: str):
-        console = console.lower().strip()
-        if console in "unknown":
-            return MyrientConsole.unknown
-        elif console in "playstation_3" or console in "playstation 3":
-            return MyrientConsole.playstation_3
-        elif console in "gamecube":
-            return MyrientConsole.gamecube
-        else:
-            raise NotImplementedError(f"Unsupported console {console}.")
-
-    @staticmethod
-    def domains(console: str) -> List[str]:
-        return [
-            domain.value
-            for domain in MYRENT_DOMAINS
-            if domain.key == MyrientConsole.from_string(console)
-        ]
+class MyrientGame(Game):
+    """
+    implementation of Game class for Myrient site
+    """
 
 
-@dataclass
-class MyrientDomain:
-    key: MyrientConsole
-    value: str
+class MyrientSource(Source):
+    """
+    implementation of Source class for Myrient site
+    """
 
+    content: BeautifulSoup
 
-MYRENT_DOMAINS: List[MyrientDomain] = [
-    MyrientDomain(
-        MyrientConsole.playstation_3,
-        "https://myrient.erista.me/files/No-Intro/Sony%20-%20PlayStation%203%20(PSN)%20(Content)/",
-    ),
-    MyrientDomain(
-        MyrientConsole.playstation_3,
-        "https://myrient.erista.me/files/No-Intro/Sony%20-%20PlayStation%203%20(PSN)%20(Updates)/",
-    ),
-    MyrientDomain(
-        MyrientConsole.gamecube,
-        "https://myrient.erista.me/files/Redump/Nintendo%20-%20GameCube%20-%20NKit%20RVZ%20[zstd-19-128k]/",
-    ),
-]
+    def __init__(self, console_type: ConsoleType, domain: str):
+        super().__init__(console_type, domain)
+
+    def fetch_content_url(self) -> ContentResponse:
+        http_content_response = HttpContent(self.value).fetch_url_content()
+
+        if http_content_response.is_failure():
+            raise RuntimeError(
+                f"Failure to obtain response content. Status Code: {http_content_response.status_code}, Message: {http_content_response.content}"
+            )
+
+        html_content = http_content_response.content
+        self.content = BeautifulSoup(html_content, features="html.parser")
+        return http_content_response
+
+    def parse(self) -> List[Game]:
+        table = self.content.find("table", attrs={"id": "list"})
+
+        if table is None:
+            raise RuntimeError("Could not find table in provided content.")
+        elif isinstance(table, NavigableString):
+            raise RuntimeError("Cannot traverse instance of NavigatableString.")
+
+        parsed_table_rows: List[Game] = []
+        for index, table_row in enumerate(table.find_all("tr")):
+            # skip headers and file traversal row
+            if index == 0 or index == 1:
+                continue
+            elif table_row is None:
+                continue
+
+            # TODO: implement a class to hold a generic class for parsing
+            # parsed_table_rows.append()
+
+        return parsed_table_rows
