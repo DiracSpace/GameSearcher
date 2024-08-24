@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-from dataclasses import dataclass
 from bs4 import Tag
 from requests import get
 from requests import HTTPError, ConnectionError, Timeout, RequestException
@@ -14,11 +13,12 @@ from typing import List
 from dotenv import load_dotenv
 from enum import Enum
 from abc import ABC, abstractmethod
-from modules.sources import MYRENT_DOMAINS
 
 load_dotenv()
 
-CACHE_PATH = getenv("CACHE_PATH") or ""
+CACHE_PATH = getenv("CACHE_PATH")
+
+SAVE_PATH = getenv("SAVE_PATH")
 
 
 class ContentResponse:
@@ -58,6 +58,9 @@ class HttpContent:
 
     @property
     def cache_path(self) -> str:
+        if CACHE_PATH is None:
+            raise RuntimeError("Property CACHE_PATH not provided.")
+
         return path.join(CACHE_PATH, self.domain)
 
     @property
@@ -184,9 +187,9 @@ class Game(ABC):
     abstract class for Game
     """
 
-    content: Tag | str
+    content: Tag
 
-    def __init__(self, content: Tag | str):
+    def __init__(self, content: Tag):
         self.content = content
 
     @abstractmethod
@@ -217,10 +220,12 @@ class Source(ABC):
 
     key: ConsoleType
     value: str
+    save_path: str | None
 
     def __init__(self, key: ConsoleType, value: str):
         self.key = key
         self.value = value
+        self.save_path = SAVE_PATH
 
     @abstractmethod
     def fetch_content_url(self) -> ContentResponse:
@@ -228,6 +233,10 @@ class Source(ABC):
 
     @abstractmethod
     def parse(self) -> List[Game]:
+        pass
+
+    @abstractmethod
+    def download(self, link: str, file_name: str) -> str:
         pass
 
 
@@ -241,6 +250,10 @@ class Console(ABC):
 
     def __init__(self, console_type: ConsoleType):
         self.console_type = console_type
+
+    @property
+    def has_multiple_sources(self) -> bool:
+        return len(self.sources) > 1
 
     def get_source_by_key_or_default(self, key: ConsoleType) -> Source | None:
         """
