@@ -20,4 +20,4 @@ activate:
 
 # Run app.py using the virtual environment
 run:
-	@. $(VENV_DIR)/bin/activate && python ./src/main.py
+	@. $(VENV_DIR)/bin/activate && uvicorn features.main:app --reload
