@@ -5,7 +5,7 @@ from re import sub
 from typing import List
 from urllib.parse import unquote, urljoin
 from bs4 import BeautifulSoup, NavigableString
-from modules.core import ConsoleType, ContentResponse, Game, HttpContent, Source
+from core.core import ConsoleType, ContentResponse, Game, HttpContent, Source
 
 
 class MyrientGame(Game):

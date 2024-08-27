@@ -1,8 +1,14 @@
 # Define the virtual environment directory
 VENV_DIR := venv
 
-# Define the Python interpreter
-PYTHON := $(VENV_DIR)/bin/python
+# Detect OS and set the Python interpreter path accordingly
+ifeq ($(OS),Windows_NT)
+    PYTHON := $(VENV_DIR)/Scripts/python.exe
+    ACTIVATE := $(VENV_DIR)/Scripts/activate
+else
+    PYTHON := $(VENV_DIR)/bin/python
+    ACTIVATE := $(VENV_DIR)/bin/activate
+endif
 
 # Create the virtual environment and install dependencies
 install:
@@ -16,8 +22,8 @@ clean:
 
 # Activate the virtual environment
 activate:
-	@. $(VENV_DIR)/bin/activate
+	@. $(ACTIVATE)
 
 # Run app.py using the virtual environment
 run:
-	@. $(VENV_DIR)/bin/activate && uvicorn features.main:app --reload
+	@. $(ACTIVATE) && uvicorn features.main:app --reload

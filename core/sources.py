@@ -1,6 +1,6 @@
 from typing import List
-from modules.core import ConsoleType
-from modules.myrient import MyrientSource
+from core.core import ConsoleType
+from core.myrient import MyrientSource
 
 
 MYRENT_DOMAINS: List[MyrientSource] = [

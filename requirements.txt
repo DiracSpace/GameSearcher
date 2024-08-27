@@ -2,6 +2,6 @@ requests
 requests-cache
 beautifulsoup4
 tenacity
-python-dotenv
 fastapi
+pydantic-settings
 uvicorn[standard]
