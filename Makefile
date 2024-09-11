@@ -26,4 +26,8 @@ activate:
 
 # Run app.py using the virtual environment
 run:
-	@. $(ACTIVATE) && uvicorn features.main:app --reload
+	make activate && uvicorn backend.server:app --reload --port 8000
+
+# Run tests
+test:
+	make activate && $(PYTHON) -m unittest discover -s .\tests\ -p 'test_*.py'
